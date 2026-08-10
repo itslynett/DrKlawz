@@ -73,7 +73,7 @@ export default function PublicBookingPage() {
         ]);
         setTechnicians([
           { id: 'admin-id', name: 'Dr. Klawz (Owner)', role: 'ADMIN' },
-          { id: 'staff-id', name: 'Jane Doe (Nail Tech)', role: 'STAFF' },
+          { id: 'staff-id', name: 'Lead Nail Tech', role: 'STAFF' },
         ]);
       } finally {
         setLoading(false);
