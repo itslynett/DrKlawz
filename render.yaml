@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: drklawz-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npx prisma db push && npm run start:prod
+    envVars:
+      - key: JWT_SECRET
+        value: drklawz-super-secret-key-2026
