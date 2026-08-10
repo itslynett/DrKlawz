@@ -1,0 +1,308 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum EquipmentStatus {
+  OPERATIONAL
+  MAINTENANCE_REQUIRED
+  IN_REPAIR
+  REPLACED
+  DECOMMISSIONED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  BANK_TRANSFER
+  MOBILE_MONEY
+}
+
+enum ExpenseCategory {
+  RENT
+  UTILITIES
+  INTERNET
+  MARKETING
+  TRANSPORT
+  PRODUCTS
+  EQUIPMENT
+  REPAIRS
+  TRAINING
+  SOFTWARE
+  SUBSCRIPTIONS
+  MISCELLANEOUS
+}
+
+enum ExtractionEntityType {
+  EXPENSE
+  INVENTORY
+  SUPPLIER
+  INCOME
+  APPOINTMENT
+  EQUIPMENT_MAINTENANCE
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  passwordHash String
+  name         String
+  role         Role           @default(STAFF)
+  avatarUrl    String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  appointments Appointment[]  @relation("StaffAppointments")
+  dailyNotes   DailyNote[]    @relation("StaffDailyNotes")
+  schedules    WorkSchedule[]
+}
+
+model Client {
+  id                     String         @id @default(uuid())
+  name                   String
+  phone                  String?
+  whatsapp               String?
+  instagram              String?
+  email                  String?
+  birthday               DateTime?
+  address                String?
+  emergencyContactName   String?
+  emergencyContactPhone  String?
+  allergies              String?
+  medicalNotes           String?
+  preferredNailShape     String?
+  preferredNailLength    String?
+  favouriteColours       String[]
+  favouriteDesigns       String[]
+  favouriteTechnicianId  String?
+  notes                  String?
+  lifetimeSpending       Decimal        @default(0.00) @db.Decimal(10, 2)
+  totalVisits            Int            @default(0)
+  lastVisit              DateTime?
+  nextAppointment        DateTime?
+  loyaltyPoints          Int            @default(0)
+  status                 String         @default("Active") // Active, Inactive, VIP
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  appointments           Appointment[]
+  payments               Income[]
+  photos                 ClientPhoto[]
+}
+
+model ClientPhoto {
+  id        String   @id @default(uuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  url       String
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model Appointment {
+  id                String            @id @default(uuid())
+  clientId          String
+  client            Client            @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  staffId           String
+  staff             User              @relation("StaffAppointments", fields: [staffId], references: [id])
+  dateTime          DateTime
+  durationMinutes   Int               @default(60)
+  status            AppointmentStatus @default(PENDING)
+  depositPaid       Decimal           @default(0.00) @db.Decimal(10, 2)
+  remainingBalance  Decimal           @default(0.00) @db.Decimal(10, 2)
+  notes             String?
+  preferredLength   String?
+  preferredShape    String?
+  preferredColours  String[]
+  referenceImageUrl String?
+  instagramHandle   String?
+  termsAgreed       Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  services          Service[]         @relation("AppointmentServices")
+  payments          Income[]
+}
+
+model Service {
+  id              String        @id @default(uuid())
+  name            String
+  durationMinutes Int           @default(60)
+  price           Decimal       @db.Decimal(10, 2)
+  materialsUsed   String?
+  estimatedProfit Decimal       @db.Decimal(10, 2)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  appointments    Appointment[] @relation("AppointmentServices")
+  payments        Income[]
+}
+
+model InventoryItem {
+  id                String             @id @default(uuid())
+  name              String
+  category          String
+  brand             String?
+  colour            String?
+  supplierId        String?
+  supplier          Supplier?          @relation(fields: [supplierId], references: [id])
+  purchaseDate      DateTime?
+  expiryDate        DateTime?
+  quantityPurchased Decimal            @db.Decimal(10, 2)
+  quantityRemaining Decimal            @db.Decimal(10, 2)
+  minimumStock      Decimal            @db.Decimal(10, 2)
+  unitCost          Decimal            @db.Decimal(10, 2)
+  sellingValue      Decimal?           @db.Decimal(10, 2)
+  barcode           String?            @unique
+  receiptUrl        String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  history           InventoryHistory[]
+}
+
+model InventoryHistory {
+  id           String        @id @default(uuid())
+  itemId       String
+  item         InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  changeAmount Decimal       @db.Decimal(10, 2) // negative for consumption, positive for restock
+  type         String        // RESTOCK, CONSUMED, CORRECTION
+  notes        String?
+  createdAt    DateTime      @default(now())
+}
+
+model Equipment {
+  id                  String            @id @default(uuid())
+  name                String
+  purchaseDate        DateTime?
+  purchaseCost        Decimal           @db.Decimal(10, 2)
+  warrantyExpiry      DateTime?
+  condition           String            @default("Good")
+  maintenanceSchedule String?           // e.g. "Every 6 months"
+  nextMaintenanceDate DateTime?
+  replacementDate     DateTime?
+  receiptUrl          String?
+  notes               String?
+  status              EquipmentStatus   @default(OPERATIONAL)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  repairs             EquipmentRepair[]
+}
+
+model EquipmentRepair {
+  id          String    @id @default(uuid())
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  repairDate  DateTime
+  cost        Decimal   @db.Decimal(10, 2)
+  description String
+  status      String    @default("Completed") // Pending, Completed
+  createdAt   DateTime  @default(now())
+}
+
+model Income {
+  id            String        @id @default(uuid())
+  amount        Decimal       @db.Decimal(10, 2)
+  tips          Decimal       @default(0.00) @db.Decimal(10, 2)
+  discount      Decimal       @default(0.00) @db.Decimal(10, 2)
+  refundAmount  Decimal       @default(0.00) @db.Decimal(10, 2)
+  paymentMethod PaymentMethod @default(CASH)
+  invoiceNumber String?       @unique
+  paymentDate   DateTime      @default(now())
+  clientId      String?
+  client        Client?       @relation(fields: [clientId], references: [id])
+  appointmentId String?
+  appointment   Appointment?  @relation(fields: [appointmentId], references: [id])
+  serviceId     String?
+  service       Service?      @relation(fields: [serviceId], references: [id])
+  notes         String?
+  createdAt     DateTime      @default(now())
+}
+
+model Expense {
+  id         String          @id @default(uuid())
+  category   ExpenseCategory
+  amount     Decimal         @db.Decimal(10, 2)
+  receiptUrl String?
+  notes      String?
+  date       DateTime        @default(now())
+  createdAt  DateTime        @default(now())
+}
+
+model Supplier {
+  id            String          @id @default(uuid())
+  name          String
+  contactPerson String?
+  phone         String?
+  email         String?
+  website       String?
+  averagePrices String?         // Markdown or JSON list of general price rates
+  notes         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  items         InventoryItem[]
+}
+
+model MarketingCampaign {
+  id            String    @id @default(uuid())
+  platform      String    // Instagram, TikTok, Facebook, etc.
+  name          String
+  cost          Decimal   @db.Decimal(10, 2)
+  promotions    String?
+  referralInfo  String?
+  reviewsRating Decimal?  @db.Decimal(3, 2)
+  startDate     DateTime?
+  endDate       DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+}
+
+model DailyNote {
+  id          String                 @id @default(uuid())
+  date        DateTime               @default(now())
+  rawText     String
+  fileUrl     String?
+  processed   Boolean                @default(false)
+  staffId     String?
+  staff       User?                  @relation("StaffDailyNotes", fields: [staffId], references: [id])
+  createdAt   DateTime               @default(now())
+  extractions DailyNoteExtraction[]
+}
+
+model DailyNoteExtraction {
+  id          String               @id @default(uuid())
+  noteId      String
+  note        DailyNote            @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  entityType  ExtractionEntityType
+  entityId    String?              // Nullable until confirmed and created
+  matchedText String               // The portion of text that was extracted
+  data        Json                 // Structured JSON containing extracted fields
+  confirmed   Boolean              @default(false)
+  createdAt   DateTime             @default(now())
+}
+
+model WorkSchedule {
+  id        String   @id @default(uuid())
+  staffId   String
+  staff     User     @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  dayOfWeek Int      // 0 = Sunday, 1 = Monday, etc.
+  startTime String   // e.g. "09:00"
+  endTime   String   // e.g. "18:00"
+  isWorking Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([staffId, dayOfWeek])
+}

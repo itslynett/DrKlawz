@@ -1,0 +1,18 @@
+{
+  "name": "Dr. Klawz Digital Business Journal",
+  "short_name": "Dr. Klawz Journal",
+  "description": "Premium luxury business journal and offline-first management console for nail technicians.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDFBF7",
+  "theme_color": "#3E2723",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

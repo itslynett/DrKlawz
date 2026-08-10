@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #FFF0F2; /* Soft Blush Pink Desk */
+  --foreground: #1A1112; /* Matte Black */
+  
+  --paper-bg: #FFFBFB; /* Premium light cream paper page */
+  --paper-border: #FADCE2; /* Soft blush borders */
+  --paper-lines: rgba(194, 140, 159, 0.12); /* Dusty Rose ruled lines */
+  --paper-redline: rgba(233, 30, 99, 0.18); /* Primary pink margin line */
+  --leather-bg: #F6D6D9; /* Soft Nude Pink Cover base */
+  
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-cursive: 'Caveat', cursive;
+}
+
+[data-theme='dark'] {
+  --background: #12090A; /* Deep Dark Matte Rose */
+  --foreground: #FFF5F6; /* Creamy Pink Text */
+  
+  --paper-bg: #1C1113; /* Very dark rose paper page */
+  --paper-border: #3A2327; /* Dark pinkish border */
+  --paper-lines: rgba(194, 140, 159, 0.08); /* Faint grid lines */
+  --paper-redline: rgba(233, 30, 99, 0.15);
+  --leather-bg: #2E1A1D; /* Dark nude pink cover */
+}
+
+@theme {
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-cursive: var(--font-cursive);
+  
+  --color-primary: #E91E63;
+  --color-secondary: #1A1112;
+  --color-accent-pink: #F6D6D9;
+  --color-blush: #FFF0F2;
+  --color-rose-gold: #C28C9F;
+  --color-cream: #FFFBFB;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Notebook paper ruling utility classes */
+.notebook-ruled {
+  background-image: linear-gradient(var(--paper-lines) 1px, transparent 1px);
+  background-size: 100% 2rem;
+  line-height: 2rem;
+}
+
+.notebook-margin {
+  border-left: 2px double var(--paper-redline);
+  padding-left: 1.5rem;
+  margin-left: 1.5rem;
+}
+
+/* Premium Pink Leopard Print Cover Pattern */
+.leopard-cover-pattern {
+  background-image: url('/cheetah_print.png');
+  background-size: cover;
+  background-position: center;
+  box-shadow: 
+    inset 0 0 40px rgba(26,17,18,0.15),
+    0 15px 35px rgba(26,17,18,0.2);
+}
+
+/* Notebook Interior Bows and Hearts Pattern (3.5% Opacity) */
+.notebook-interior-pattern {
+  background-color: var(--paper-bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23E91E63' fill-opacity='0.035'%3E%3C!-- Ribbon Bow 1 --%3E%3Cpath d='M30 30c-5-5-8-2-4 2c2 2 5-1 4-2zm6-2c-1-1-4 2-2 4c4 4 7 1 2-4zm-3 2c0 .5-.2 1-.5 1s-.5-.5-.5-1s.2-1 .5-1s.5.5.5 1zm-.5 1c-.5 2-2 3-2 3c0 0 1-1 2-3zm2 0c.5 2 2 3 2 3c0 0-1-1-2-3z'/%3E%3C!-- Ribbon Bow 2 --%3E%3Cpath d='M90 80c-5-5-8-2-4 2c2 2 5-1 4-2zm6-2c-1-1-4 2-2 4c4 4 7 1 2-4zm-3 2c0 .5-.2 1-.5 1s-.5-.5-.5-1s.2-1 .5-1s.5.5.5 1zm-.5 1c-.5 2-2 3-2 3c0 0 1-1 2-3zm2 0c.5 2 2 3 2 3c0 0-1-1-2-3z'/%3E%3C!-- Tiny Hearts --%3E%3Cpath d='M15 75c-1-2-3-2-3 0c0 1 2 3 3 4c1-1 3-3 3-4c0-2-2-2-3 0z'/%3E%3Cpath d='M75 25c-1-2-3-2-3 0c0 1 2 3 3 4c1-1 3-3 3-4c0-2-2-2-3 0z'/%3E%3Cpath d='M105 105c-1-2-3-2-3 0c0 1 2 3 3 4c1-1 3-3 3-4c0-2-2-2-3 0z'/%3E%3C!-- Leaf Branch --%3E%3Cpath d='M75 75q-5-5-10-2m8 1c-2-2-4-2-3 0m0-2c-2-2-3 0-1 1' stroke='%23E91E63' stroke-width='0.75' stroke-opacity='0.035' fill='none'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Spiral rings binding styling - Matte Black planner rings */
+.spiral-ring {
+  background: linear-gradient(90deg, #1A1112 0%, #3A3132 25%, #4A4142 50%, #2A2122 75%, #1A1112 100%);
+  box-shadow: 2px 4px 6px rgba(0,0,0,0.3);
+  border-radius: 4px;
+}
+
+.spiral-ring-shadow {
+  background: rgba(26, 17, 18, 0.15);
+  filter: blur(2px);
+  border-radius: 4px;
+}
+
+/* Customized scrollbars to match luxury paper styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(194, 140, 159, 0.3);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(233, 30, 99, 0.3);
+}
