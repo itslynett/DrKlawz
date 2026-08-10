@@ -52,7 +52,7 @@ export default function NotebookFrame({ activeTab, setActiveTab, children }: Not
             animate={{ scale: 1, opacity: 1 }}
             exit={{ rotateY: -95, opacity: 0, transition: { duration: 0.6 } }}
             style={{ transformOrigin: "left center" }}
-            className="relative w-full max-w-[600px] h-[90vh] leopard-cover-pattern rounded-[32px] border-8 border-[#1A1112] shadow-2xl flex flex-col items-center justify-center gap-12 p-8 sm:p-12 text-center select-none"
+            className="relative w-full max-w-[600px] min-h-[80vh] sm:h-[90vh] leopard-cover-pattern rounded-[32px] border-4 sm:border-8 border-[#1A1112] shadow-2xl flex flex-col items-center justify-center gap-8 sm:gap-12 p-6 sm:p-12 text-center select-none"
           >
             {/* Sleek Magnetic Clasp Strap (Simple, no charms) */}
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-28 bg-[#1A1112] rounded-l-2xl border-l border-y border-white/10 shadow-lg flex items-center justify-start pl-4">
@@ -91,7 +91,7 @@ export default function NotebookFrame({ activeTab, setActiveTab, children }: Not
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="relative w-full max-w-[850px] h-[90vh] flex flex-col lg:flex-row rounded-3xl overflow-hidden shadow-2xl border-4 border-[#1A1112]"
+            className="relative w-full max-w-[950px] h-[92vh] sm:h-[90vh] flex flex-col lg:flex-row rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 sm:border-4 border-[#1A1112]"
           >
             {/* 2. Left side index menu (Desktop sidebar layout) */}
             <div className="hidden lg:flex flex-col justify-between w-64 p-6 bg-[#1A1112] text-white border-r border-[#0A0405]">
